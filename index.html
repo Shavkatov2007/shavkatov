@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shavkatov Portfoliio</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+<script src="https://kit.fontawesome.com/6c1c9c4c2a.js" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+background:#05060a;
+color:#fff;
+overflow-x:hidden;
+}
+
+/* 3D BACKGROUND */
+#bg3d{
+position:fixed;
+inset:0;
+z-index:-3;
+}
+
+/* INTRO */
+.intro{
+position:fixed;
+inset:0;
+background:rgba(5,6,10,0.75);
+backdrop-filter: blur(20px);
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:999;
+}
+
+.intro h1{
+font-size:44px;
+font-weight:900;
+background:linear-gradient(90deg,#00d4ff,#7a5cff,#00ffa3);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+text-align:center;
+}
+
+.intro p{color:#aaa;margin-top:10px;font-size:16px;text-align:center;}
+.intro span{margin-top:12px;color:#777;font-size:13px;}
+
+/* NAV */
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 10%;
+position:sticky;
+top:0;
+backdrop-filter:blur(20px);
+background:rgba(10,10,15,0.6);
+border-bottom:1px solid rgba(255,255,255,0.05);
+z-index:10;
+}
+
+nav h1{
+font-weight:900;
+background:linear-gradient(90deg,#00d4ff,#7a5cff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+/* HERO */
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:0 10%;
+opacity:0;
+transform:translateY(50px);
+}
+
+.hero h1{font-size:72px;font-weight:900;}
+.hero span{
+background:linear-gradient(90deg,#00d4ff,#7a5cff,#00ffa3);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.hero p{max-width:700px;color:#aaa;margin-top:15px;}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+padding:60px 10%;
+opacity:0;
+transform:translateY(50px);
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
+padding:20px;
+transition:0.3s;
+backdrop-filter:blur(12px);
+cursor:pointer;
+}
+
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 30px rgba(0,212,255,0.2);
+}
+
+/* TAGS */
+.tag{
+display:inline-block;
+padding:6px 10px;
+margin:4px;
+border-radius:10px;
+font-size:12px;
+background:rgba(0,212,255,0.1);
+border:1px solid rgba(0,212,255,0.2);
+}
+
+/* CONTACT */
+.contact{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+padding:20px 10%;
+}
+
+.contact div{
+padding:15px;
+border-radius:14px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+cursor:pointer;
+text-align:center;
+transition:0.3s;
+}
+.contact div:hover{
+background:rgba(0,212,255,0.12);
+transform:translateY(-6px);
+}
+
+/* CHAT */
+.chat{
+max-width:900px;
+margin:60px auto;
+padding:20px;
+}
+
+.box{
+height:320px;
+overflow:auto;
+padding:15px;
+background:rgba(255,255,255,0.05);
+border-radius:16px;
+border:1px solid rgba(255,255,255,0.08);
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.msg{padding:10px 14px;border-radius:12px;max-width:70%;font-size:14px;}
+.ai{background:rgba(255,255,255,0.08);}
+.user{background:#00d4ff;color:#000;align-self:flex-end;}
+
+.buttons{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+gap:10px;
+margin-top:10px;
+}
+
+.btn{
+padding:10px;
+text-align:center;
+border-radius:12px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+cursor:pointer;
+transition:0.3s;
+}
+.btn:hover{
+background:rgba(0,212,255,0.1);
+transform:translateY(-5px);
+}
+
+/* FOOTER */
+footer{
+text-align:center;
+padding:40px;
+color:#777;
+border-top:1px solid rgba(255,255,255,0.05);
+}
+
+/* ⭐ RATING */
+.rating{
+text-align:center;
+padding:40px 20px;
+}
+
+.stars{
+font-size:32px;
+cursor:pointer;
+margin:10px 0;
+}
+
+.stars span{
+color:#555;
+transition:0.2s;
+}
+
+.stars span.active{
+color:#00d4ff;
+text-shadow:0 0 10px #00d4ff;
+}
+
+.rate-btn{
+padding:10px 20px;
+border:none;
+border-radius:12px;
+background:rgba(0,212,255,0.15);
+color:#fff;
+cursor:pointer;
+margin-top:10px;
+transition:0.3s;
+}
+
+.rate-btn:hover{
+background:rgba(0,212,255,0.3);
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg3d"></canvas>
+
+<div class="intro" id="intro">
+<h1>Shavkatov Dilshod</h1>
+<h4>Sabr qiling...</h4>
+<span>Ma'lumot olish uchun ↓</span>
+</div>
+
+<nav><h1>Shavkatov</h1></nav>
+
+<section class="hero" id="hero">
+<h1>Bu <span>Shavkatov Portfoliosi</span></h1>
+<p>Bu portfolioda men haqimda malumot olishlaringiz mumkin</p>
+</section>
+
+<div class="grid" id="info">
+<div class="card">👤 Full Stack</div>
+<div class="card">🦾 Gym</div>
+<div class="card">🎓 Axborot xavfsizligi (2-kurs)</div>
+
+<div class="card">
+⚡ Skills:
+<br><br>
+<span class="tag">Python</span>
+<span class="tag">MySQL</span>
+<span class="tag">Flask</span>
+<span class="tag">HTML</span>
+<span class="tag">CSS</span>
+<span class="tag">JavaScript</span>
+<span class="tag">Backend</span>
+</div>
+</div>
+
+<h2 style="text-align:center;margin-top:40px;">📞 Contact</h2>
+
+<div class="contact">
+<div onclick="window.open('https://instagram.com/shavkatov__d1lshod','_blank')"><i class="fab fa-instagram"></i><br>Instagram</div>
+<div onclick="window.open('https://t.me/SHAVKATOV_DILSHOD','_blank')"><i class="fab fa-telegram"></i><br>Telegram</div>
+<div onclick="window.location='tel:+998503302299'"><i class="fas fa-phone"></i><br>Phone</div>
+</div>
+
+<div class="chat">
+<h2 style="text-align:center;">🤖 AI Chat Bot</h2>
+
+<div class="box" id="box">
+<div class="msg ai">Salom 👋 Men Dilshod AI assistantman</div>
+</div>
+
+<div class="buttons">
+<div class="btn" onclick="ask('salom')">👋 Salom</div>
+<div class="btn" onclick="ask('full')">🤭 Toliq malumot</div>
+<div class="btn" onclick="ask('oqish')">🎓 O‘qish</div>
+<div class="btn" onclick="ask('universitet')">🏛 Universitet</div>
+<div class="btn" onclick="ask('manzil')">📍 Manzil</div>
+<div class="btn" onclick="ask('qiziqish')">🔥 Qiziqish</div>
+<div class="btn" onclick="ask('skills')">⚡ Skills</div>
+<div class="btn" onclick="ask('loyiha')">🚀 Loyihalar</div>
+<div class="btn" onclick="ask('aloqa')">📞 Aloqa</div>
+<div class="btn" onclick="ask('kurs')">😶 Kurslar</div>
+<div class="btn" onclick="ask('qoshimcha')">☺️ Qoshimcha</div>
+<div class="btn" onclick="ask('hayr')">👋 Hayr</div>
+</div>
+</div>
+
+<!-- ⭐ RATING SECTION -->
+<div class="rating">
+<h2>⭐ Saytni baholang :)</h2>
+<div class="stars" id="stars">
+<span onclick="rate(1)">★</span>
+<span onclick="rate(2)">★</span>
+<span onclick="rate(3)">★</span>
+<span onclick="rate(4)">★</span>
+<span onclick="rate(5)">★</span>
+</div>
+
+<button class="rate-btn" onclick="submitRate()">Yuborish</button>
+<p id="rateText" style="color:#aaa;margin-top:10px;"></p>
+</div>
+
+<footer>© 2026 Shavkatov Dilshod Portfolio</footer>
+
+<script>
+
+/* intro */
+window.onload=()=>{
+gsap.to("#intro",{
+opacity:0,y:80,scale:0.95,duration:1.5,delay:1.2,
+onComplete:()=>{
+document.getElementById("intro").remove();
+gsap.to(".hero",{opacity:1,y:0,duration:1});
+gsap.to("#info",{opacity:1,y:0,duration:1,delay:0.5});
+}
+});
+};
+
+/* chat */
+function add(text,type){
+let box=document.getElementById("box");
+let div=document.createElement("div");
+div.className="msg "+type;
+div.innerText=text;
+box.appendChild(div);
+box.scrollTop=box.scrollHeight;
+}
+
+function ask(t){
+add("Tanlandi: "+t,"user");
+setTimeout(()=>{
+if(t=="salom") add("👋 Salom! Sizga qanday yordam bera olaman?","ai");
+if(t=="full") add("🤭 Men Shavkatov Dilshod Sherzodovich. Buxoro viloyati Olot tumanidanman. 11.07.2007","ai");
+if(t=="oqish") add("🎓 Najot Ta'lim + Internation English School","ai");
+if(t=="universitet") add("🏛 Toshkent Davlat Iqtisodiyot Universiteti","ai");
+if(t=="manzil") add("😂 Qiziqma uka","ai");
+if(t=="qiziqish") add("🔥 Gym, English, Football","ai");
+if(t=="skills") add("⚡ Python, JS, Flask, FullStack","ai");
+if(t=="loyiha") add("🚀 AI SaaS, E-commerce","ai");
+if(t=="aloqa") add("📞 Telegram orqali yozing","ai");
+if(t=="kurs") add("😶 Python, Foundation","ai");
+if(t=="qoshimcha") add("☺️ Hamma kabi oddiy odam","ai");
+if(t=="hayr") add("👋 Xayr! Yana ko'rishguncha!","ai");
+},400);
+}
+
+/* stars */
+let selected=0;
+
+function rate(n){
+selected=n;
+let stars=document.querySelectorAll("#stars span");
+stars.forEach((s,i)=>{
+s.classList.toggle("active",i<n);
+});
+}
+
+function submitRate(){
+let text=document.getElementById("rateText");
+if(selected==0){
+text.innerText="⭐ Iltimos yulduz tanlang";
+}else{
+text.innerText="Rahmat! Siz "+selected+" ⭐ berdingiz";
+}
+}
+
+/* 3D */
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
+const renderer=new THREE.WebGLRenderer({canvas:document.getElementById("bg3d"),alpha:true});
+
+renderer.setSize(innerWidth,innerHeight);
+camera.position.z=6;
+
+const geo=new THREE.BufferGeometry();
+const count=1500;
+const pos=new Float32Array(count*3);
+
+for(let i=0;i<count;i++){
+pos[i*3]=(Math.random()-0.5)*10;
+pos[i*3+1]=(Math.random()-0.5)*10;
+pos[i*3+2]=(Math.random()-0.5)*10;
+}
+
+geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
+
+const mat=new THREE.PointsMaterial({size:0.02,color:0x00d4ff});
+const points=new THREE.Points(geo,mat);
+scene.add(points);
+
+function animate(){
+requestAnimationFrame(animate);
+points.rotation.y+=0.0006;
+renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener("resize",()=>{
+camera.aspect=innerWidth/innerHeight;
+camera.updateProjectionMatrix();
+renderer.setSize(innerWidth,innerHeight);
+});
+
+</script>
+
+</body>
+</html>
