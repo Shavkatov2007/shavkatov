@@ -3,428 +3,997 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Shavkatov Portfoliio</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
-<script src="https://kit.fontawesome.com/6c1c9c4c2a.js" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
+<title>Shavkatov Dilshod — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-
+:root{
+  --bg:#04040d;
+  --bg2:#080815;
+  --v:#7B61FF;
+  --v2:#9D8FFF;
+  --m:#00F5C4;
+  --c:#FF5E7D;
+  --y:#FFD166;
+  --txt:#EEEEFF;
+  --muted:#6B6B8A;
+  --glass:rgba(255,255,255,0.035);
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(123,97,255,0.2);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;font-size:16px}
 body{
-background:#05060a;
-color:#fff;
-overflow-x:hidden;
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  overflow-x:hidden;
+  cursor:none;
+}
+/* NOISE OVERLAY */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9997;opacity:.5;
 }
 
-/* 3D BACKGROUND */
-#bg3d{
-position:fixed;
-inset:0;
-z-index:-3;
+/* ── CURSOR ── */
+#cur{position:fixed;width:8px;height:8px;background:var(--m);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;mix-blend-mode:screen}
+#cur2{position:fixed;width:36px;height:36px;border:1.5px solid rgba(123,97,255,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease,border-color .2s}
+body.cursor-big #cur{width:60px;height:60px;background:rgba(123,97,255,.15);mix-blend-mode:normal}
+body.cursor-big #cur2{border-color:var(--v);opacity:0}
+
+/* ── PROGRESS ── */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--v),var(--m));z-index:1001;width:0%;transition:width .08s;box-shadow:0 0 12px var(--m)}
+
+/* ── INTRO ── */
+#intro{
+  position:fixed;inset:0;background:var(--bg);z-index:9990;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
 }
-
-/* INTRO */
-.intro{
-position:fixed;
-inset:0;
-background:rgba(5,6,10,0.75);
-backdrop-filter: blur(20px);
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-z-index:999;
+.i-ring{
+  width:90px;height:90px;border-radius:24px;
+  background:linear-gradient(135deg,var(--v),var(--m));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:#fff;
+  animation:ringPulse 1.2s ease-in-out infinite alternate;
 }
+@keyframes ringPulse{from{box-shadow:0 0 0 0 rgba(123,97,255,.5)}to{box-shadow:0 0 0 20px rgba(0,245,196,.15),0 0 60px rgba(123,97,255,.4)}}
+.i-name{font-family:'Syne',sans-serif;font-size:28px;font-weight:700;letter-spacing:-1px;background:linear-gradient(90deg,var(--v),var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.i-bar{width:200px;height:2px;background:rgba(255,255,255,.08);border-radius:9px;overflow:hidden}
+.i-fill{height:100%;background:linear-gradient(90deg,var(--v),var(--m));animation:iFill 1.5s ease forwards}
+@keyframes iFill{from{width:0}to{width:100%}}
+.i-sub{color:var(--muted);font-size:13px;letter-spacing:1px}
 
-.intro h1{
-font-size:44px;
-font-weight:900;
-background:linear-gradient(90deg,#00d4ff,#7a5cff,#00ffa3);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-text-align:center;
-}
-
-.intro p{color:#aaa;margin-top:10px;font-size:16px;text-align:center;}
-.intro span{margin-top:12px;color:#777;font-size:13px;}
-
-/* NAV */
+/* ── NAV ── */
 nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 10%;
-position:sticky;
-top:0;
-backdrop-filter:blur(20px);
-background:rgba(10,10,15,0.6);
-border-bottom:1px solid rgba(255,255,255,0.05);
-z-index:10;
+  position:sticky;top:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 7%;
+  background:rgba(4,4,13,.7);
+  backdrop-filter:blur(32px) saturate(180%);
+  border-bottom:1px solid var(--border);
 }
-
-nav h1{
-font-weight:900;
-background:linear-gradient(90deg,#00d4ff,#7a5cff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+nav::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--v),transparent);opacity:.4}
+.nlogo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.5px;background:linear-gradient(90deg,var(--v),var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nlinks{display:flex;gap:30px;list-style:none}
+.nlinks a{color:var(--muted);text-decoration:none;font-size:13px;font-weight:500;letter-spacing:.3px;transition:color .2s;position:relative}
+.nlinks a::after{content:'';position:absolute;left:0;bottom:-4px;width:0;height:1px;background:var(--m);transition:width .25s}
+.nlinks a:hover{color:var(--txt)}
+.nlinks a:hover::after{width:100%}
+.ncta{
+  padding:9px 22px;border-radius:12px;
+  background:linear-gradient(135deg,var(--v),#5e48d4);
+  color:#fff !important;font-weight:600;font-size:13px;
+  box-shadow:0 4px 20px rgba(123,97,255,.4);
+  transition:transform .2s,box-shadow .2s !important;
 }
+.ncta::after{display:none !important}
+.ncta:hover{transform:translateY(-2px) !important;box-shadow:0 8px 30px rgba(123,97,255,.6) !important}
 
-/* HERO */
+/* ── HERO ── */
 .hero{
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:0 10%;
-opacity:0;
-transform:translateY(50px);
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:0 7%;position:relative;overflow:hidden;
+  opacity:0;
+}
+/* WebGL canvas behind hero */
+#heroCanvas{position:absolute;inset:0;z-index:0;pointer-events:none}
+
+.hero-content{position:relative;z-index:2}
+
+.avail-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:7px 18px;border-radius:99px;
+  background:rgba(0,245,196,.07);border:1px solid rgba(0,245,196,.2);
+  font-size:12px;font-weight:600;color:var(--m);letter-spacing:.8px;
+  text-transform:uppercase;margin-bottom:32px;
+}
+.avail-dot{width:7px;height:7px;border-radius:50%;background:var(--m);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,245,196,.5)}50%{opacity:.3;box-shadow:0 0 0 5px rgba(0,245,196,0)}}
+
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(52px,9vw,96px);
+  font-weight:800;line-height:1.02;
+  letter-spacing:-3px;margin-bottom:20px;
+}
+.hero h1 .line{display:block;overflow:hidden}
+.hero h1 .line span{display:inline-block;transform:translateY(110%);opacity:0;transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .9s}
+.hero h1 .line span.vis{transform:translateY(0);opacity:1}
+.hero h1 .grad{background:linear-gradient(135deg,var(--v) 0%,var(--m) 45%,var(--c) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:inline}
+
+.hero-sub{color:var(--muted);font-size:18px;max-width:540px;line-height:1.7;margin-bottom:42px;opacity:0;transform:translateY(20px);transition:all .8s .6s}
+.hero-sub.vis{opacity:1;transform:translateY(0)}
+
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;transform:translateY(20px);transition:all .8s .8s}
+.hero-btns.vis{opacity:1;transform:translateY(0)}
+
+/* MAGNETIC BUTTON */
+.mbtn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;
+  padding:15px 36px;border-radius:14px;font-size:15px;font-weight:600;
+  text-decoration:none;border:none;cursor:none;overflow:hidden;
+  transition:box-shadow .3s;
+}
+.mbtn-primary{
+  background:linear-gradient(135deg,var(--v),#5e48d4);color:#fff;
+  box-shadow:0 6px 28px rgba(123,97,255,.45);
+}
+.mbtn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--m),var(--v));
+  opacity:0;transition:opacity .4s;
+}
+.mbtn-primary:hover::before{opacity:1}
+.mbtn-primary:hover{box-shadow:0 12px 40px rgba(123,97,255,.6)}
+.mbtn span{position:relative;z-index:1}
+
+.mbtn-ghost{
+  background:transparent;color:var(--txt);
+  border:1px solid var(--border2);
+  backdrop-filter:blur(10px);
+}
+.mbtn-ghost::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(123,97,255,.12);opacity:0;transition:opacity .3s;
+}
+.mbtn-ghost:hover::before{opacity:1}
+.mbtn-ghost:hover{border-color:rgba(123,97,255,.5);box-shadow:0 0 30px rgba(123,97,255,.15)}
+
+/* ── SCROLL HINT ── */
+.scroll-hint{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--muted);font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  opacity:0;animation:fadeInUp .8s 2s forwards;
+}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,transparent,var(--v));animation:scrollLine 1.8s ease-in-out infinite}
+@keyframes scrollLine{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+@keyframes fadeInUp{to{opacity:1}}
+
+/* ── STATS BAND ── */
+.stats-band{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:24px;overflow:hidden;
+  margin:0 7% 100px;opacity:0;transform:translateY(30px);
+}
+.stat{background:var(--bg);padding:36px 20px;text-align:center;position:relative;overflow:hidden;transition:background .3s}
+.stat::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 150%,rgba(123,97,255,.08),transparent 70%);opacity:0;transition:opacity .3s}
+.stat:hover{background:rgba(123,97,255,.05)}
+.stat:hover::after{opacity:1}
+.sn{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;background:linear-gradient(135deg,var(--v),var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;line-height:1}
+.sl{color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+
+/* ── SECTION BASE ── */
+.sec{padding:100px 7%;opacity:0;transform:translateY(40px)}
+.sec.vis{opacity:1;transform:translateY(0);transition:opacity .8s,transform .8s}
+.sec-eye{font-size:11px;font-weight:700;letter-spacing:3px;color:var(--v);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.sec-eye::before{content:'';width:20px;height:1.5px;background:var(--v);flex-shrink:0}
+.sec-h{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:800;letter-spacing:-1.5px;margin-bottom:56px;line-height:1.1}
+
+/* ── ABOUT ── */
+.about-wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.acard{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:22px;padding:28px;
+  transition:border-color .3s,box-shadow .3s,transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.acard:hover{border-color:var(--border2);box-shadow:0 20px 60px rgba(123,97,255,.1);transform:translateY(-6px)}
+.acard-h{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:18px;color:var(--v2);letter-spacing:.5px}
+.irow{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;align-items:flex-start}
+.irow:last-child{border:none}
+.ik{color:var(--muted);min-width:90px;flex-shrink:0;font-size:13px}
+.iv{color:var(--txt);font-weight:500}
+.acard.full{grid-column:span 2}
+.acard.quote{
+  grid-column:span 2;
+  background:linear-gradient(135deg,rgba(123,97,255,.08),rgba(0,245,196,.04));
+  border:1px solid rgba(123,97,255,.2);
+  padding:32px;text-align:center;
+}
+.quote-text{
+  font-family:'Syne',sans-serif;font-size:22px;font-weight:700;
+  line-height:1.5;letter-spacing:-.5px;
+  background:linear-gradient(135deg,var(--txt),var(--muted));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.quote-author{color:var(--muted);font-size:13px;margin-top:12px}
+
+/* ── SKILLS ── */
+.skills-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.skcard{
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:16px;padding:18px 22px;
+  transition:border-color .3s,transform .3s;
+}
+.skcard:hover{border-color:var(--border2);transform:translateX(6px)}
+.sktop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px;font-weight:600}
+.skpct{color:var(--m);font-size:12px;font-variant-numeric:tabular-nums;font-weight:700}
+.skbg{height:5px;background:rgba(255,255,255,.05);border-radius:9px;overflow:hidden}
+.skfill{height:100%;border-radius:9px;background:linear-gradient(90deg,var(--v),var(--m));width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px rgba(0,245,196,.35)}
+
+/* ── 3D FLOATING ORBS (skill tags) ── */
+.orb-field{
+  width:100%;height:220px;position:relative;margin-bottom:56px;
+  perspective:600px;
+}
+.orb{
+  position:absolute;
+  padding:8px 18px;border-radius:99px;
+  background:rgba(123,97,255,.1);border:1px solid rgba(123,97,255,.25);
+  font-size:13px;font-weight:600;color:var(--v2);
+  cursor:default;white-space:nowrap;
+  animation:floatOrb linear infinite;
+  transform-style:preserve-3d;
+}
+@keyframes floatOrb{
+  0%{transform:translate3d(0,0,0) rotateY(0)}
+  50%{transform:translate3d(0,-12px,20px) rotateY(5deg)}
+  100%{transform:translate3d(0,0,0) rotateY(0)}
 }
 
-.hero h1{font-size:72px;font-weight:900;}
-.hero span{
-background:linear-gradient(90deg,#00d4ff,#7a5cff,#00ffa3);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+/* ── PROJECTS HORIZONTAL ── */
+.proj-outer{
+  overflow-x:auto;padding:0 7% 24px;
+  scrollbar-width:thin;scrollbar-color:rgba(123,97,255,.3) transparent;
+  -webkit-overflow-scrolling:touch;
+  margin-bottom:80px;
 }
-.hero p{max-width:700px;color:#aaa;margin-top:15px;}
+.proj-outer::-webkit-scrollbar{height:4px}
+.proj-outer::-webkit-scrollbar-track{background:transparent}
+.proj-outer::-webkit-scrollbar-thumb{background:rgba(123,97,255,.3);border-radius:9px}
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:20px;
-padding:60px 10%;
-opacity:0;
-transform:translateY(50px);
+.proj-row{
+  display:flex;gap:20px;
+  width:max-content;padding:12px 0;
 }
+.pcard{
+  width:340px;
+  background:var(--glass);border:1px solid var(--border);
+  border-radius:24px;padding:28px;flex-shrink:0;position:relative;overflow:hidden;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1),box-shadow .4s,border-color .3s;
+  cursor:pointer;
+}
+.pcard::before{
+  content:'';position:absolute;
+  top:-80px;right:-80px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(123,97,255,.15),transparent 70%);
+  transition:opacity .4s;opacity:0;
+}
+.pcard:hover::before{opacity:1}
+.pcard:hover{
+  transform:translateY(-12px) rotateX(3deg) rotateY(-2deg);
+  box-shadow:0 28px 70px rgba(123,97,255,.2);
+  border-color:rgba(123,97,255,.3);
+}
+.pcard-num{
+  font-family:'Syne',sans-serif;font-size:48px;font-weight:800;
+  color:rgba(255,255,255,.04);position:absolute;top:16px;right:20px;line-height:1;
+}
+.pe{font-size:40px;margin-bottom:16px;display:block;transition:transform .3s}
+.pcard:hover .pe{transform:scale(1.15) rotate(-6deg)}
+.pt{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.pd{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:20px}
+.ptags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.ptag{padding:4px 12px;border-radius:99px;background:rgba(123,97,255,.1);border:1px solid rgba(123,97,255,.18);font-size:11px;font-weight:600;color:#a89fff;letter-spacing:.2px}
+.pstatus{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.pstatus .dot{width:6px;height:6px;border-radius:50%;background:var(--m);animation:blink 2s infinite}
+.pstatus.done .dot{background:var(--m)}
+.pstatus.wip .dot{background:var(--y)}
 
-.card{
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-border-radius:16px;
-padding:20px;
-transition:0.3s;
-backdrop-filter:blur(12px);
-cursor:pointer;
+/* DRAG HINT */
+.drag-hint{
+  display:flex;align-items:center;gap:8px;
+  color:var(--muted);font-size:12px;letter-spacing:1px;
+  padding:0 7%;margin-bottom:80px;text-transform:uppercase;
 }
+.drag-arrow{animation:dragArrow 1.5s ease-in-out infinite}
+@keyframes dragArrow{0%,100%{transform:translateX(0)}50%{transform:translateX(8px)}}
 
-.card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 30px rgba(0,212,255,0.2);
+/* ── TIMELINE ── */
+.tl{position:relative;padding-left:36px}
+.tl::before{content:'';position:absolute;left:12px;top:0;bottom:0;width:1.5px;background:linear-gradient(to bottom,var(--v),transparent)}
+.tli{position:relative;margin-bottom:44px;opacity:0;transform:translateX(-24px)}
+.tli::before{
+  content:'';position:absolute;left:-29px;top:5px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--v);
+  box-shadow:0 0 14px rgba(123,97,255,.7);
+  transition:background .3s;
 }
+.tli:hover::before{background:var(--v)}
+.tly{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--v);text-transform:uppercase;margin-bottom:6px}
+.tlh{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:5px;letter-spacing:-.3px}
+.tld{color:var(--muted);font-size:14px;line-height:1.65}
 
-/* TAGS */
-.tag{
-display:inline-block;
-padding:6px 10px;
-margin:4px;
-border-radius:10px;
-font-size:12px;
-background:rgba(0,212,255,0.1);
-border:1px solid rgba(0,212,255,0.2);
+/* ── CHAT ── */
+.chat-wrap{max-width:700px;margin:0 auto}
+.chat-box{
+  height:320px;overflow-y:auto;padding:20px;
+  background:rgba(255,255,255,.025);border:1px solid var(--border);
+  border-radius:20px 20px 0 0;display:flex;flex-direction:column;gap:10px;
+  scrollbar-width:thin;scrollbar-color:rgba(123,97,255,.25) transparent;
 }
+.msg{padding:12px 16px;border-radius:14px;max-width:78%;font-size:14px;line-height:1.6;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ai{background:rgba(123,97,255,.1);border:1px solid rgba(123,97,255,.18);align-self:flex-start;border-radius:6px 14px 14px 14px}
+.usr{background:linear-gradient(135deg,var(--v),#5e48d4);color:#fff;align-self:flex-end;border-radius:14px 6px 14px 14px}
+.typing-dots{display:flex;gap:5px;padding:14px 16px;align-self:flex-start}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--v);opacity:.5;animation:tdot .8s infinite}
+.typing-dots span:nth-child(2){animation-delay:.15s}
+.typing-dots span:nth-child(3){animation-delay:.3s}
+@keyframes tdot{0%,80%,100%{transform:scale(1)}40%{transform:scale(1.5);opacity:1}}
 
-/* CONTACT */
-.contact{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-padding:20px 10%;
+.chat-btns{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:8px;
+  padding:14px;background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-top:none;border-radius:0 0 20px 20px;
 }
+.cbtn{
+  padding:9px 12px;border-radius:12px;
+  background:rgba(123,97,255,.07);border:1px solid rgba(123,97,255,.13);
+  color:var(--txt);font-size:13px;font-weight:500;cursor:none;
+  transition:background .2s,transform .2s,box-shadow .2s;text-align:center;
+}
+.cbtn:hover{background:rgba(123,97,255,.2);transform:translateY(-3px);box-shadow:0 8px 20px rgba(123,97,255,.2)}
 
-.contact div{
-padding:15px;
-border-radius:14px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-cursor:pointer;
-text-align:center;
-transition:0.3s;
+/* ── CONTACT ── */
+.con-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.ccard{
+  background:var(--glass);border:1px solid var(--border);border-radius:20px;
+  padding:28px 22px;text-align:center;text-decoration:none;color:var(--txt);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,border-color .3s;
+  display:block;position:relative;overflow:hidden;
 }
-.contact div:hover{
-background:rgba(0,212,255,0.12);
-transform:translateY(-6px);
-}
+.ccard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,97,255,.06),rgba(0,245,196,.04));opacity:0;transition:opacity .3s}
+.ccard:hover::before{opacity:1}
+.ccard:hover{transform:translateY(-10px) scale(1.02);box-shadow:0 20px 50px rgba(123,97,255,.18);border-color:var(--border2)}
+.cicon{font-size:28px;margin-bottom:12px;display:block;transition:transform .3s}
+.ccard:hover .cicon{transform:scale(1.25) rotate(-5deg)}
+.clabel{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:5px}
+.csub{color:var(--muted);font-size:12px}
 
-/* CHAT */
-.chat{
-max-width:900px;
-margin:60px auto;
-padding:20px;
+/* ── RATING ── */
+.rating-sec{padding:80px 7%;text-align:center;opacity:0;transform:translateY(30px)}
+.rating-sec.vis{opacity:1;transform:translateY(0);transition:all .8s}
+.rh{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
+.rs{color:var(--muted);font-size:14px;margin-bottom:32px}
+.stars-row{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
+.star{font-size:44px;cursor:none;color:rgba(255,255,255,.1);transition:color .2s,transform .2s,text-shadow .2s}
+.star.on{color:var(--y);text-shadow:0 0 24px rgba(255,209,102,.7);transform:scale(1.2)}
+.star:hover{transform:scale(1.3)}
+.rsub-btn{
+  padding:13px 32px;border-radius:14px;border:none;cursor:none;
+  background:linear-gradient(135deg,var(--v),#5e48d4);color:#fff;
+  font-size:15px;font-weight:600;
+  box-shadow:0 6px 24px rgba(123,97,255,.4);
+  transition:transform .2s,box-shadow .2s;
 }
+.rsub-btn:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(123,97,255,.6)}
+#rresult{margin-top:16px;font-size:15px;font-weight:600;min-height:24px;color:var(--m)}
 
-.box{
-height:320px;
-overflow:auto;
-padding:15px;
-background:rgba(255,255,255,0.05);
-border-radius:16px;
-border:1px solid rgba(255,255,255,0.08);
-display:flex;
-flex-direction:column;
-gap:10px;
+/* ── BACK TO TOP ── */
+#top{
+  position:fixed;bottom:28px;right:28px;
+  width:48px;height:48px;border-radius:14px;
+  background:rgba(123,97,255,.15);border:1px solid rgba(123,97,255,.3);
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;z-index:500;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .2s,box-shadow .2s;
+  color:var(--v);font-size:18px;
 }
+#top.show{opacity:1;pointer-events:all}
+#top:hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(123,97,255,.4)}
 
-.msg{padding:10px 14px;border-radius:12px;max-width:70%;font-size:14px;}
-.ai{background:rgba(255,255,255,0.08);}
-.user{background:#00d4ff;color:#000;align-self:flex-end;}
-
-.buttons{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-gap:10px;
-margin-top:10px;
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(10,10,28,.9);border:1px solid var(--border2);
+  color:var(--m);padding:12px 24px;border-radius:14px;
+  font-size:14px;font-weight:600;backdrop-filter:blur(20px);
+  z-index:600;opacity:0;pointer-events:none;transition:all .3s;
 }
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-.btn{
-padding:10px;
-text-align:center;
-border-radius:12px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.08);
-cursor:pointer;
-transition:0.3s;
-}
-.btn:hover{
-background:rgba(0,212,255,0.1);
-transform:translateY(-5px);
-}
-
-/* FOOTER */
+/* ── FOOTER ── */
 footer{
-text-align:center;
-padding:40px;
-color:#777;
-border-top:1px solid rgba(255,255,255,0.05);
+  padding:48px 7% 36px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
 }
+.flogo{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.5px;background:linear-gradient(90deg,var(--v),var(--m));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.flinks{display:flex;gap:20px}
+.flinks a{color:var(--muted);font-size:13px;text-decoration:none;transition:color .2s}
+.flinks a:hover{color:var(--txt)}
+.fcopy{color:var(--muted);font-size:12px}
 
-/* ⭐ RATING */
-.rating{
-text-align:center;
-padding:40px 20px;
-}
+/* GLOW BGs */
+.g1,.g2,.g3{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:-2}
+.g1{width:700px;height:700px;background:rgba(123,97,255,.055);top:-200px;left:-150px}
+.g2{width:500px;height:500px;background:rgba(0,245,196,.04);bottom:-100px;right:-100px}
+.g3{width:400px;height:400px;background:rgba(255,94,125,.04);top:50%;left:50%;transform:translate(-50%,-50%)}
 
-.stars{
-font-size:32px;
-cursor:pointer;
-margin:10px 0;
-}
-
-.stars span{
-color:#555;
-transition:0.2s;
-}
-
-.stars span.active{
-color:#00d4ff;
-text-shadow:0 0 10px #00d4ff;
-}
-
-.rate-btn{
-padding:10px 20px;
-border:none;
-border-radius:12px;
-background:rgba(0,212,255,0.15);
-color:#fff;
-cursor:pointer;
-margin-top:10px;
-transition:0.3s;
-}
-
-.rate-btn:hover{
-background:rgba(0,212,255,0.3);
+@media(max-width:768px){
+  nav{padding:14px 5%}
+  .nlinks{display:none}
+  .hero{padding:0 5%}
+  .stats-band{grid-template-columns:1fr 1fr;margin:0 5% 70px}
+  .sec{padding:70px 5%}
+  .about-wrap{grid-template-columns:1fr}
+  .acard.full,.acard.quote{grid-column:span 1}
+  .proj-outer{padding:0 5% 24px}
+  footer{flex-direction:column;text-align:center}
+  .flinks{justify-content:center}
 }
 </style>
 </head>
-
 <body>
+<div id="cur"></div>
+<div id="cur2"></div>
+<div id="prog"></div>
+<div class="g1"></div><div class="g2"></div><div class="g3"></div>
+<div id="toast" class="toast"></div>
 
-<canvas id="bg3d"></canvas>
-
-<div class="intro" id="intro">
-<h1>Shavkatov Dilshod</h1>
-<h4>Sabr qiling...</h4>
-<span>Ma'lumot olish uchun ↓</span>
+<!-- INTRO -->
+<div id="intro">
+  <div class="i-ring">SD</div>
+  <div class="i-name">Shavkatov Dilshod</div>
+  <div class="i-bar"><div class="i-fill"></div></div>
+  <div class="i-sub">Portfolio yuklanmoqda...</div>
 </div>
 
-<nav><h1>Shavkatov</h1></nav>
+<!-- HERO WEBGL CANVAS -->
+<canvas id="heroCanvas"></canvas>
 
+<nav>
+  <div class="nlogo">Shavkatov .</div>
+  <ul class="nlinks">
+    <li><a href="#about">Haqimda</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Loyihalar</a></li>
+    <li><a href="#timeline">Yo'l</a></li>
+    <li><a href="#contact" class="ncta">Bog'lanish</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
 <section class="hero" id="hero">
-<h1>Bu <span>Shavkatov Portfoliosi</span></h1>
-<p>Bu portfolioda men haqimda malumot olishlaringiz mumkin</p>
+  <div class="hero-content">
+    <div class="avail-badge"><div class="avail-dot"></div>Loyihalarga ochiq</div>
+    <h1>
+      <div class="line"><span id="hl1">Shavkatov</span></div>
+      <div class="line"><span id="hl2"><span class="grad">Dilshod</span></span></div>
+    </h1>
+    <p class="hero-sub" id="hsub">Full Stack Developer · Gym Enthusiast · Future Startup Founder</p>
+    <div class="hero-btns" id="hbtns">
+      <a href="#projects" class="mbtn mbtn-primary"><span>🚀 Loyihalar</span></a>
+      <a href="#contact" class="mbtn mbtn-ghost"><span>📡 Bog'lanish</span></a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Pastga</span>
+    <div class="scroll-line"></div>
+  </div>
 </section>
 
-<div class="grid" id="info">
-<div class="card">👤 Full Stack</div>
-<div class="card">🦾 Gym</div>
-<div class="card">🎓 Axborot xavfsizligi (2-kurs)</div>
-
-<div class="card">
-⚡ Skills:
-<br><br>
-<span class="tag">Python</span>
-<span class="tag">MySQL</span>
-<span class="tag">Flask</span>
-<span class="tag">HTML</span>
-<span class="tag">CSS</span>
-<span class="tag">JavaScript</span>
-<span class="tag">Backend</span>
-</div>
+<!-- STATS -->
+<div class="stats-band" id="stats">
+  <div class="stat"><span class="sn" data-t="2">0</span><div class="sl">Yillik tajriba</div></div>
+  <div class="stat"><span class="sn" data-t="12">0</span><div class="sl">Loyihalar</div></div>
+  <div class="stat"><span class="sn" data-t="7">0</span><div class="sl">Texnologiyalar</div></div>
+  <div class="stat"><span class="sn" data-t="100">0</span><div class="sl">Mas'uliyat</div></div>
 </div>
 
-<h2 style="text-align:center;margin-top:40px;">📞 Contact</h2>
+<!-- ABOUT -->
+<section class="sec" id="about">
+  <div class="sec-eye">Kimman</div>
+  <div class="sec-h">Men haqimda 👤</div>
+  <div class="about-wrap">
+    <div class="acard">
+      <div class="acard-h">📋 Shaxsiy</div>
+      <div class="irow"><span class="ik">Ism</span><span class="iv">Shavkatov Dilshod Sherzodovich</span></div>
+      <div class="irow"><span class="ik">Tug'ilgan</span><span class="iv">11.07.2007 · Buxoro, Olot</span></div>
+      <div class="irow"><span class="ik">Universitet</span><span class="iv">TDIU · Axborot xavfsizligi</span></div>
+      <div class="irow"><span class="ik">Kurs</span><span class="iv">2-kurs</span></div>
+      <div class="irow"><span class="ik">Tillar</span><span class="iv">O'zbek · Rus · English</span></div>
+    </div>
+    <div class="acard">
+      <div class="acard-h">🔥 Qiziqishlar</div>
+      <div class="irow"><span class="ik">Sport</span><span class="iv">Gym — 3 yil</span></div>
+      <div class="irow"><span class="ik">Futbol</span><span class="iv">Real Madrid ❤️</span></div>
+      <div class="irow"><span class="ik">English</span><span class="iv">Pre-Int → B2 maqsad</span></div>
+      <div class="irow"><span class="ik">Maqsad</span><span class="iv">Xorijda ishlash / Startup</span></div>
+      <div class="irow"><span class="ik">Hobby</span><span class="iv">Kod yozish, Musik tinglash</span></div>
+    </div>
+    <div class="acard full">
+      <div class="acard-h">📚 Ta'lim yo'li</div>
+      <div class="irow"><span class="ik">Maktab</span><span class="iv">Najot Ta'lim</span></div>
+      <div class="irow"><span class="ik">Ingliz</span><span class="iv">International English School</span></div>
+      <div class="irow"><span class="ik">Kurslar</span><span class="iv">Python · Foundation · Axborot xavfsizligi</span></div>
+      <div class="irow"><span class="ik">Hozir</span><span class="iv">TDIU — Toshkent Davlat Iqtisodiyot Universiteti</span></div>
+    </div>
+    <div class="acard quote">
+      <div class="quote-text">"Work in silence,<br>let success speak."</div>
+      <div class="quote-author">— Dilshod Shavkatov</div>
+    </div>
+  </div>
+</section>
 
-<div class="contact">
-<div onclick="window.open('https://instagram.com/shavkatov__d1lshod','_blank')"><i class="fab fa-instagram"></i><br>Instagram</div>
-<div onclick="window.open('https://t.me/SHAVKATOV_DILSHOD','_blank')"><i class="fab fa-telegram"></i><br>Telegram</div>
-<div onclick="window.location='tel:+998503302299'"><i class="fas fa-phone"></i><br>Phone</div>
+<!-- SKILLS -->
+<section class="sec" id="skills">
+  <div class="sec-eye">Texnologiyalar</div>
+  <div class="sec-h">Mening skill setim ⚡</div>
+
+  <!-- Floating orbs -->
+  <div class="orb-field" id="orbField"></div>
+
+  <div class="skills-wrap">
+    <div class="skcard"><div class="sktop"><span>🐍 Python</span><span class="skpct">85%</span></div><div class="skbg"><div class="skfill" data-p="85"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🌐 JavaScript</span><span class="skpct">80%</span></div><div class="skbg"><div class="skfill" data-p="80"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🎨 HTML / CSS</span><span class="skpct">92%</span></div><div class="skbg"><div class="skfill" data-p="92"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🔥 Flask</span><span class="skpct">72%</span></div><div class="skbg"><div class="skfill" data-p="72"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🗄️ MySQL</span><span class="skpct">70%</span></div><div class="skbg"><div class="skfill" data-p="70"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🤖 Telegram Bot API</span><span class="skpct">88%</span></div><div class="skbg"><div class="skfill" data-p="88"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🔧 Git / GitHub</span><span class="skpct">75%</span></div><div class="skbg"><div class="skfill" data-p="75"></div></div></div>
+    <div class="skcard"><div class="sktop"><span>🌍 English</span><span class="skpct">55%</span></div><div class="skbg"><div class="skfill" data-p="55"></div></div></div>
+  </div>
+</section>
+
+<!-- PROJECTS horizontal scroll -->
+<section class="sec" id="projects" style="padding-bottom:0">
+  <div style="padding:0 0 24px">
+    <div class="sec-eye">Ishlarim</div>
+    <div class="sec-h" style="margin-bottom:16px">Loyihalar 🚀</div>
+  </div>
+</section>
+<div class="proj-outer">
+  <div class="proj-row" id="prow">
+    <div class="pcard"><div class="pcard-num">01</div><span class="pe">🤖</span><div class="pt">AI SaaS Platform</div><div class="pd">GPT API asosidagi kontent yaratuvchi platforma foydalanuvchilar uchun.</div><div class="ptags"><span class="ptag">Python</span><span class="ptag">Flask</span><span class="ptag">OpenAI</span><span class="ptag">MySQL</span></div><div class="pstatus wip"><div class="dot"></div>Ishlanmoqda</div></div>
+    <div class="pcard"><div class="pcard-num">02</div><span class="pe">🛒</span><div class="pt">E-Commerce Bot</div><div class="pd">Telegram savdo platformasi. Click, Payme, Uzum Bank to'lov tizimlari.</div><div class="ptags"><span class="ptag">Aiogram</span><span class="ptag">Click API</span><span class="ptag">PostgreSQL</span></div><div class="pstatus done"><div class="dot"></div>Yakunlangan</div></div>
+    <div class="pcard"><div class="pcard-num">03</div><span class="pe">📊</span><div class="pt">KurMon Dashboard</div><div class="pd">Kuryerlar monitoring tizimi. Real-vaqt statistika va Chart.js vizualizatsiya.</div><div class="ptags"><span class="ptag">HTML/CSS/JS</span><span class="ptag">Chart.js</span><span class="ptag">Real-time</span></div><div class="pstatus done"><div class="dot"></div>Yakunlangan</div></div>
+    <div class="pcard"><div class="pcard-num">04</div><span class="pe">🎯</span><div class="pt">Odatim Habit Tracker</div><div class="pd">Telegram Mini App. XP/leveling system, ko'p screen navigatsiya.</div><div class="ptags"><span class="ptag">Mini App</span><span class="ptag">JavaScript</span><span class="ptag">Game Design</span></div><div class="pstatus done"><div class="dot"></div>Yakunlangan</div></div>
+    <div class="pcard"><div class="pcard-num">05</div><span class="pe">🗣️</span><div class="pt">Jarvis AI Voice</div><div class="pd">macOS PyQt5 AI ovozli assistent. Groq API + O'zbek TTS.</div><div class="ptags"><span class="ptag">PyQt5</span><span class="ptag">Groq API</span><span class="ptag">TTS</span></div><div class="pstatus done"><div class="dot"></div>Yakunlangan</div></div>
+    <div class="pcard"><div class="pcard-num">06</div><span class="pe">💳</span><div class="pt">UZCARD Fintech Demo</div><div class="pd">Revolut darajasidagi fintech demo. Glassmorphism, animatsiyalar, mobile-first.</div><div class="ptags"><span class="ptag">HTML/CSS/JS</span><span class="ptag">Glassmorphism</span><span class="ptag">Fintech</span></div><div class="pstatus done"><div class="dot"></div>Yakunlangan</div></div>
+  </div>
+</div>
+<div class="drag-hint">
+  <span>← Suring</span>
+  <span class="drag-arrow">→</span>
 </div>
 
-<div class="chat">
-<h2 style="text-align:center;">🤖 AI Chat Bot</h2>
+<!-- TIMELINE -->
+<section class="sec" id="timeline">
+  <div class="sec-eye">Tarix</div>
+  <div class="sec-h">Mening yo'lim 🛤️</div>
+  <div class="tl" id="tl">
+    <div class="tli"><div class="tly">2022</div><div class="tlh">Birinchi Kodlar</div><div class="tld">HTML/CSS o'rganishni boshladim. Najot Ta'limda asoslarni mustahkamladim.</div></div>
+    <div class="tli"><div class="tly">2023</div><div class="tlh">Python va Backend</div><div class="tld">Flask, MySQL, Telegram Bot API. Birinchi real loyihalarni yaratdim.</div></div>
+    <div class="tli"><div class="tly">2023</div><div class="tlh">Gym va Ingliz tili</div><div class="tld">International English School'da o'qishni boshladim. Gym mashg'ulotlar ham boshlandi.</div></div>
+    <div class="tli"><div class="tly">2024</div><div class="tlh">TDIU — Axborot Xavfsizligi</div><div class="tld">Toshkent Davlat Iqtisodiyot Universitetiga kirdim. Yangi shahar, yangi hayot.</div></div>
+    <div class="tli"><div class="tly">2025–</div><div class="tlh">Fullstack + AI 🔥</div><div class="tld">AI ilovalar, Telegram Mini Apps. Xalqaro startup va freelancenga tayyorlanmoqdaman.</div></div>
+  </div>
+</section>
 
-<div class="box" id="box">
-<div class="msg ai">Salom 👋 Men Dilshod AI assistantman</div>
+<!-- AI CHAT -->
+<section class="sec" id="chat">
+  <div class="sec-eye">AI Assistant</div>
+  <div class="sec-h">Dilshod AI 🤖</div>
+  <div class="chat-wrap">
+    <div class="chat-box" id="cbox">
+      <div class="msg ai">👋 Salom! Men Dilshod haqidagi AI assistantman. Quyida tugmalarni bosib so'rang!</div>
+    </div>
+    <div class="chat-btns">
+      <div class="cbtn" onclick="qa('salom')">👋 Salom</div>
+      <div class="cbtn" onclick="qa('full')">🤭 To'liq</div>
+      <div class="cbtn" onclick="qa('oqish')">🎓 O'qish</div>
+      <div class="cbtn" onclick="qa('uni')">🏛 TDIU</div>
+      <div class="cbtn" onclick="qa('qiz')">🔥 Qiziqish</div>
+      <div class="cbtn" onclick="qa('sk')">⚡ Skills</div>
+      <div class="cbtn" onclick="qa('loy')">🚀 Loyihalar</div>
+      <div class="cbtn" onclick="qa('con')">📞 Aloqa</div>
+      <div class="cbtn" onclick="qa('gym')">💪 Gym</div>
+      <div class="cbtn" onclick="qa('maq')">🎯 Maqsad</div>
+      <div class="cbtn" onclick="qa('kurs')">📚 Kurslar</div>
+      <div class="cbtn" onclick="qa('bye')">👋 Xayr</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="sec" id="contact">
+  <div class="sec-eye">Aloqa</div>
+  <div class="sec-h">Bog'lanish 📡</div>
+  <div class="con-grid">
+    <a href="https://instagram.com/shavkatov__d1lshod" target="_blank" class="ccard">
+      <span class="cicon" style="color:#E1306C"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></span>
+      <div class="clabel">Instagram</div><div class="csub">@shavkatov__d1lshod</div>
+    </a>
+    <a href="https://t.me/SHAVKATOV_DILSHOD" target="_blank" class="ccard">
+      <span class="cicon" style="color:#0088cc"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></span>
+      <div class="clabel">Telegram</div><div class="csub">@SHAVKATOV_DILSHOD</div>
+    </a>
+    <a href="tel:+998503302299" class="ccard">
+      <span class="cicon" style="color:#00F5C4"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></span>
+      <div class="clabel">Telefon</div><div class="csub">+998 50 330 22 99</div>
+    </a>
+    <div class="ccard" id="emailCard" onclick="copyEmail()">
+      <span class="cicon" style="color:#FFD166"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>
+      <div class="clabel">Email</div><div class="csub" id="emailSub">Bosing — nusxalanadi</div>
+    </div>
+  </div>
+</section>
+
+<!-- RATING -->
+<div class="rating-sec" id="rating">
+  <div class="rh">Portfolioni baholang</div>
+  <div class="rs">Sizning fikringiz juda muhim!</div>
+  <div class="stars-row" id="srow">
+    <span class="star" onclick="rate(1)">★</span>
+    <span class="star" onclick="rate(2)">★</span>
+    <span class="star" onclick="rate(3)">★</span>
+    <span class="star" onclick="rate(4)">★</span>
+    <span class="star" onclick="rate(5)">★</span>
+  </div>
+  <button class="rsub-btn mbtn mbtn-primary" onclick="submitR()"><span>⭐ Yuborish</span></button>
+  <div id="rresult"></div>
 </div>
 
-<div class="buttons">
-<div class="btn" onclick="ask('salom')">👋 Salom</div>
-<div class="btn" onclick="ask('full')">🤭 Toliq malumot</div>
-<div class="btn" onclick="ask('oqish')">🎓 O‘qish</div>
-<div class="btn" onclick="ask('universitet')">🏛 Universitet</div>
-<div class="btn" onclick="ask('manzil')">📍 Manzil</div>
-<div class="btn" onclick="ask('qiziqish')">🔥 Qiziqish</div>
-<div class="btn" onclick="ask('skills')">⚡ Skills</div>
-<div class="btn" onclick="ask('loyiha')">🚀 Loyihalar</div>
-<div class="btn" onclick="ask('aloqa')">📞 Aloqa</div>
-<div class="btn" onclick="ask('kurs')">😶 Kurslar</div>
-<div class="btn" onclick="ask('qoshimcha')">☺️ Qoshimcha</div>
-<div class="btn" onclick="ask('hayr')">👋 Hayr</div>
-</div>
-</div>
+<!-- FOOTER -->
+<footer>
+  <div class="flogo">Shavkatov .</div>
+  <div class="flinks">
+    <a href="#about">Haqimda</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Loyihalar</a>
+    <a href="#contact">Aloqa</a>
+  </div>
+  <div class="fcopy">© 2026 Shavkatov Dilshod — All rights reserved</div>
+</footer>
 
-<!-- ⭐ RATING SECTION -->
-<div class="rating">
-<h2>⭐ Saytni baholang :)</h2>
-<div class="stars" id="stars">
-<span onclick="rate(1)">★</span>
-<span onclick="rate(2)">★</span>
-<span onclick="rate(3)">★</span>
-<span onclick="rate(4)">★</span>
-<span onclick="rate(5)">★</span>
+<div id="top" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
 </div>
-
-<button class="rate-btn" onclick="submitRate()">Yuborish</button>
-<p id="rateText" style="color:#aaa;margin-top:10px;"></p>
-</div>
-
-<footer>© 2026 Shavkatov Dilshod Portfolio</footer>
 
 <script>
-
-/* intro */
-window.onload=()=>{
-gsap.to("#intro",{
-opacity:0,y:80,scale:0.95,duration:1.5,delay:1.2,
-onComplete:()=>{
-document.getElementById("intro").remove();
-gsap.to(".hero",{opacity:1,y:0,duration:1});
-gsap.to("#info",{opacity:1,y:0,duration:1,delay:0.5});
-}
+// ── CURSOR ──
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
 });
+(function loop(){
+  rx+=(mx-rx)*.15;ry+=(my-ry)*.15;
+  cur2.style.left=rx+'px';cur2.style.top=ry+'px';
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,.mbtn,.cbtn,.ccard,.pcard,.rsub-btn,.star,#top,.skcard').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('cursor-big'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('cursor-big'));
+});
+
+// ── PROGRESS + TOP BTN ──
+const prog=document.getElementById('prog'),topBtn=document.getElementById('top');
+window.addEventListener('scroll',()=>{
+  const p=scrollY/(document.documentElement.scrollHeight-innerHeight)*100;
+  prog.style.width=p+'%';
+  topBtn.classList.toggle('show',scrollY>400);
+});
+
+// ── HERO WEBGL BLOB ──
+(function initBlob(){
+  const canvas=document.getElementById('heroCanvas');
+  const gl=canvas.getContext('webgl');
+  if(!gl)return;
+  
+  function resize(){
+    canvas.width=innerWidth;canvas.height=innerHeight;
+    gl.viewport(0,0,innerWidth,innerHeight);
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  const VS=`
+    attribute vec2 p;
+    void main(){gl_Position=vec4(p,0.,1.);}
+  `;
+  const FS=`
+    precision highp float;
+    uniform vec2 res;
+    uniform float t;
+    uniform vec2 mouse;
+    
+    float smin(float a,float b,float k){
+      float h=clamp(.5+.5*(b-a)/k,0.,1.);
+      return mix(b,a,h)-k*h*(1.-h);
+    }
+    
+    float blob(vec2 uv,vec2 c,float r){
+      return r-length(uv-c);
+    }
+    
+    void main(){
+      vec2 uv=(gl_FragCoord.xy-.5*res)/min(res.x,res.y);
+      vec2 m=(mouse-.5*res)/min(res.x,res.y);
+      
+      float b1=blob(uv,vec2(.0,.0),.28+.04*sin(t*.7));
+      float b2=blob(uv,vec2(.22*cos(t*.5),.22*sin(t*.4)),.16+.02*sin(t*1.3));
+      float b3=blob(uv,vec2(-.18*cos(t*.3),.18*sin(t*.6)),.13+.02*cos(t));
+      float bm=blob(uv,m*.6,.12);
+      
+      float f=smin(smin(smin(b1,b2,.12),b3,.10),bm,.08);
+      
+      float edge=smoothstep(-.008,.008,f);
+      float inner=smoothstep(.0,.06,f);
+      
+      vec3 col1=vec3(.48,.38,1.);
+      vec3 col2=vec3(.0,.96,.77);
+      vec3 col3=vec3(1.,.37,.49);
+      
+      float a=atan(uv.y,uv.x)+t*.2;
+      vec3 c=mix(col1,col2,.5+.5*sin(a));
+      c=mix(c,col3,.3*sin(a*2.+t));
+      
+      float glow=.04/(.01+length(uv)*length(uv));
+      vec3 glowC=mix(col1,col2,.5+.5*sin(t));
+      
+      vec3 final=c*inner+glowC*glow*.15;
+      gl_FragColor=vec4(final,edge*.45+glow*.08);
+    }
+  `;
+  
+  function sh(src,type){
+    const s=gl.createShader(type);
+    gl.shaderSource(s,src);gl.compileShader(s);
+    return s;
+  }
+  const prog2=gl.createProgram();
+  gl.attachShader(prog2,sh(VS,gl.VERTEX_SHADER));
+  gl.attachShader(prog2,sh(FS,gl.FRAGMENT_SHADER));
+  gl.linkProgram(prog2);gl.useProgram(prog2);
+  
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+  const loc=gl.getAttribLocation(prog2,'p');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+  
+  gl.enable(gl.BLEND);
+  gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+  
+  const uRes=gl.getUniformLocation(prog2,'res');
+  const uT=gl.getUniformLocation(prog2,'t');
+  const uMouse=gl.getUniformLocation(prog2,'mouse');
+  
+  let mxg=innerWidth/2,myg=innerHeight/2;
+  document.addEventListener('mousemove',e=>{mxg=e.clientX;myg=innerHeight-e.clientY});
+  
+  let t=0;
+  (function frame(){
+    requestAnimationFrame(frame);
+    t+=.012;
+    gl.uniform2f(uRes,canvas.width,canvas.height);
+    gl.uniform1f(uT,t);
+    gl.uniform2f(uMouse,mxg,myg);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+  })();
+})();
+
+// ── THREE.JS PARTICLE FIELD ──
+(function initParticles(){
+  const script=document.createElement('script');
+  script.src='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  script.onload=function(){
+    const scene=new THREE.Scene();
+    const cam=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+    const cvs=document.createElement('canvas');
+    cvs.style.cssText='position:fixed;inset:0;z-index:-1;pointer-events:none';
+    document.body.prepend(cvs);
+    const ren=new THREE.WebGLRenderer({canvas:cvs,alpha:true});
+    ren.setSize(innerWidth,innerHeight);
+    ren.setPixelRatio(Math.min(devicePixelRatio,2));
+    cam.position.z=5;
+
+    const N=3000,geo=new THREE.BufferGeometry();
+    const pos=new Float32Array(N*3),col=new Float32Array(N*3);
+    const pal=[[.48,.38,1],[0,.96,.77],[1,.37,.49],[1,.82,.4]];
+    for(let i=0;i<N;i++){
+      pos[i*3]=(Math.random()-.5)*16;
+      pos[i*3+1]=(Math.random()-.5)*16;
+      pos[i*3+2]=(Math.random()-.5)*16;
+      const c=pal[Math.floor(Math.random()*pal.length)];
+      col[i*3]=c[0];col[i*3+1]=c[1];col[i*3+2]=c[2];
+    }
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+    const mat=new THREE.PointsMaterial({size:.022,vertexColors:true,transparent:true,opacity:.65});
+    const pts=new THREE.Points(geo,mat);
+    scene.add(pts);
+
+    let mx2=0,my2=0;
+    document.addEventListener('mousemove',e=>{mx2=(e.clientX/innerWidth-.5)*2;my2=-(e.clientY/innerHeight-.5)*2;});
+    (function a(){
+      requestAnimationFrame(a);
+      pts.rotation.y+=.0003+mx2*.0002;
+      pts.rotation.x+=.0001+my2*.0001;
+      ren.render(scene,cam);
+    })();
+    window.addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();ren.setSize(innerWidth,innerHeight);});
+  };
+  document.head.appendChild(script);
+})();
+
+// ── INTRO ──
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const intr=document.getElementById('intro');
+    intr.style.cssText+='transition:opacity .9s,transform .9s;opacity:0;transform:scale(.97)';
+    setTimeout(()=>{
+      intr.remove();
+      // hero reveal
+      const hero=document.getElementById('hero');
+      hero.style.cssText+='transition:opacity 1s;opacity:1';
+      setTimeout(()=>{
+        document.getElementById('hl1').classList.add('vis');
+        setTimeout(()=>document.getElementById('hl2').classList.add('vis'),180);
+        setTimeout(()=>document.getElementById('hsub').classList.add('vis'),400);
+        setTimeout(()=>document.getElementById('hbtns').classList.add('vis'),600);
+        animStats();
+      },200);
+    },920);
+  },1700);
+});
+
+// ── STATS COUNTER ──
+function animStats(){
+  const st=document.getElementById('stats');
+  st.style.cssText+='transition:opacity .8s .3s,transform .8s .3s;opacity:1;transform:translateY(0)';
+  document.querySelectorAll('.sn').forEach(el=>{
+    const tgt=+el.dataset.t;let cur=0;
+    const step=tgt/70;
+    const iv=setInterval(()=>{
+      cur=Math.min(cur+step,tgt);
+      el.textContent=Math.round(cur)+(tgt===100?'%':'');
+      if(cur>=tgt)clearInterval(iv);
+    },18);
+  });
+}
+
+// ── SCROLL REVEAL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.classList.add('vis');
+    e.target.querySelectorAll('.skfill').forEach(b=>b.style.width=b.dataset.p+'%');
+    e.target.querySelectorAll('.tli').forEach((t,i)=>{
+      setTimeout(()=>{
+        t.style.cssText+='transition:opacity .5s,transform .5s;opacity:1;transform:translateX(0)';
+      },i*130);
+    });
+    obs.unobserve(e.target);
+  });
+},{threshold:.09});
+document.querySelectorAll('.sec,.rating-sec').forEach(s=>obs.observe(s));
+
+// ── FLOATING ORBS ──
+const orbSkills=['Python','JavaScript','HTML/CSS','Flask','MySQL','Telegram API','Git','English','PyQt5','Node.js','REST API','JSON'];
+const field=document.getElementById('orbField');
+orbSkills.forEach((sk,i)=>{
+  const o=document.createElement('div');
+  o.className='orb';o.textContent=sk;
+  const x=5+Math.random()*88,y=10+Math.random()*75;
+  const dur=4+Math.random()*5,delay=Math.random()*4;
+  o.style.cssText=`left:${x}%;top:${y}%;animation-duration:${dur}s;animation-delay:-${delay}s`;
+  field.appendChild(o);
+});
+
+// ── MAGNETIC BUTTONS ──
+document.querySelectorAll('.mbtn').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const dx=(e.clientX-r.left-r.width/2)*.35;
+    const dy=(e.clientY-r.top-r.height/2)*.35;
+    btn.style.transform=`translate(${dx}px,${dy}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>{btn.style.transform='';});
+});
+
+// ── 3D CARD TILT ──
+document.querySelectorAll('.pcard,.acard,.ccard').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    c.style.transform=`perspective(700px) rotateY(${x*14}deg) rotateX(${-y*10}deg) translateY(-6px)`;
+  });
+  c.addEventListener('mouseleave',()=>c.style.transform='');
+});
+
+// ── CHAT ──
+const QA={
+  salom:"👋 Salom! Xush kelibsiz! Dilshod haqida hamma narsani bilaman 😄",
+  full:"🤭 Shavkatov Dilshod Sherzodovich — Buxoro, Olot tumani. 11.07.2007. TDIU Axborot xavfsizligi 2-kurs.",
+  oqish:"🎓 Najot Ta'lim + International English School. Hozir TDIU'da.",
+  uni:"🏛 Toshkent Davlat Iqtisodiyot Universiteti — Axborot xavfsizligi yo'nalishi.",
+  qiz:"🔥 Gym (3 yil), Futbol (Real Madrid ❤️), English, va Kod yozish!",
+  sk:"⚡ Python, JavaScript, HTML/CSS, Flask, MySQL, Telegram Bot API, Git. Fullstack developer!",
+  loy:"🚀 AI SaaS, E-Commerce Bot, KurMon, Odatim, Jarvis AI, UZCARD Fintech Demo.",
+  con:"📞 Telegram: @SHAVKATOV_DILSHOD | Instagram: @shavkatov__d1lshod",
+  gym:"💪 3 yildan beri gym! Cutting, bulk — hammasi. Fitness = disciplina = kod 😄",
+  maq:"🎯 Xorijda ishlash, startup ochish va kelajakda o'z AI kompaniyamni qurish!",
+  kurs:"📚 Python, Foundation, Axborot xavfsizligi kurslarini o'qiganman.",
+  bye:"👋 Xayr! Yana tashrif buyuring. Muvaffaqiyatlar! 🚀"
 };
-
-/* chat */
-function add(text,type){
-let box=document.getElementById("box");
-let div=document.createElement("div");
-div.className="msg "+type;
-div.innerText=text;
-box.appendChild(div);
-box.scrollTop=box.scrollHeight;
+function qa(k){
+  const box=document.getElementById('cbox');
+  const btn=document.querySelector(`.cbtn[onclick="qa('${k}')"]`);
+  const u=document.createElement('div');
+  u.className='msg usr';u.textContent=btn.textContent;box.appendChild(u);
+  const td=document.createElement('div');td.className='typing-dots';
+  td.innerHTML='<span></span><span></span><span></span>';box.appendChild(td);
+  box.scrollTop=box.scrollHeight;
+  setTimeout(()=>{
+    box.removeChild(td);
+    const a=document.createElement('div');a.className='msg ai';
+    a.textContent=QA[k]||'🤔 Bu haqda ma\'lumotim yo\'q.';
+    box.appendChild(a);box.scrollTop=box.scrollHeight;
+  },650);
 }
 
-function ask(t){
-add("Tanlandi: "+t,"user");
-setTimeout(()=>{
-if(t=="salom") add("👋 Salom! Sizga qanday yordam bera olaman?","ai");
-if(t=="full") add("🤭 Men Shavkatov Dilshod Sherzodovich. Buxoro viloyati Olot tumanidanman. 11.07.2007","ai");
-if(t=="oqish") add("🎓 Najot Ta'lim + Internation English School","ai");
-if(t=="universitet") add("🏛 Toshkent Davlat Iqtisodiyot Universiteti","ai");
-if(t=="manzil") add("😂 Qiziqma uka","ai");
-if(t=="qiziqish") add("🔥 Gym, English, Football","ai");
-if(t=="skills") add("⚡ Python, JS, Flask, FullStack","ai");
-if(t=="loyiha") add("🚀 AI SaaS, E-commerce","ai");
-if(t=="aloqa") add("📞 Telegram orqali yozing","ai");
-if(t=="kurs") add("😶 Python, Foundation","ai");
-if(t=="qoshimcha") add("☺️ Hamma kabi oddiy odam","ai");
-if(t=="hayr") add("👋 Xayr! Yana ko'rishguncha!","ai");
-},400);
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-/* stars */
-let selected=0;
+// ── EMAIL COPY ──
+function copyEmail(){
+  navigator.clipboard.writeText('shavkatov.dilshod@gmail.com').then(()=>{
+    document.getElementById('emailSub').textContent='✅ Nusxalandi!';
+    showToast('📋 Email nusxalandi!');
+    setTimeout(()=>document.getElementById('emailSub').textContent='Bosing — nusxalanadi',2500);
+  });
+}
 
+// ── RATING ──
+let selR=0;
 function rate(n){
-selected=n;
-let stars=document.querySelectorAll("#stars span");
-stars.forEach((s,i)=>{
-s.classList.toggle("active",i<n);
-});
+  selR=n;
+  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<n));
 }
-
-function submitRate(){
-let text=document.getElementById("rateText");
-if(selected==0){
-text.innerText="⭐ Iltimos yulduz tanlang";
-}else{
-text.innerText="Rahmat! Siz "+selected+" ⭐ berdingiz";
+function submitR(){
+  const el=document.getElementById('rresult');
+  if(!selR){el.textContent='⚠️ Iltimos yulduz tanlang';el.style.color='var(--c)';return;}
+  const msgs=['😔 Afsus, yaxshilaymiz!','😐 Rahmat, harakat qilamiz.','😊 Yaxshi! Minnatdorman.','😄 Zo\'r! Quvondim!','🤩 Ajoyib! Juda xursand bo\'ldim!'];
+  el.textContent=`${selR} ⭐ — ${msgs[selR-1]}`;
+  el.style.color=selR>=4?'var(--m)':selR>=3?'var(--y)':'var(--c)';
+  showToast(`${selR} ⭐ baho uchun rahmat!`);
 }
-}
-
-/* 3D */
-const scene=new THREE.Scene();
-const camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
-const renderer=new THREE.WebGLRenderer({canvas:document.getElementById("bg3d"),alpha:true});
-
-renderer.setSize(innerWidth,innerHeight);
-camera.position.z=6;
-
-const geo=new THREE.BufferGeometry();
-const count=1500;
-const pos=new Float32Array(count*3);
-
-for(let i=0;i<count;i++){
-pos[i*3]=(Math.random()-0.5)*10;
-pos[i*3+1]=(Math.random()-0.5)*10;
-pos[i*3+2]=(Math.random()-0.5)*10;
-}
-
-geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
-
-const mat=new THREE.PointsMaterial({size:0.02,color:0x00d4ff});
-const points=new THREE.Points(geo,mat);
-scene.add(points);
-
-function animate(){
-requestAnimationFrame(animate);
-points.rotation.y+=0.0006;
-renderer.render(scene,camera);
-}
-animate();
-
-window.addEventListener("resize",()=>{
-camera.aspect=innerWidth/innerHeight;
-camera.updateProjectionMatrix();
-renderer.setSize(innerWidth,innerHeight);
-});
-
 </script>
-
 </body>
 </html>
